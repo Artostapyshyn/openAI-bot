@@ -1,9 +1,9 @@
 package com.artostapyshyn.gptBot.bot;
 
 import com.artostapyshyn.gptBot.handler.BotCommand;
+import com.artostapyshyn.gptBot.service.ChatLogService;
 import com.artostapyshyn.gptBot.service.TelegramService;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,23 +30,24 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String openAiApiKey;
     private final Map<String, BotCommand> commandMap;
     private final TelegramService telegramService;
+    private final ChatLogService chatLogService;
 
     public TelegramBot(@Value("${telegram.bot.token}") String botToken,
                        @Value("${telegram.bot.username}") String botUsername,
                        @Value("${openai.api.key}") String openAiApiKey,
-                       @Qualifier("commandMap") Map<String, BotCommand> commandMap, TelegramService telegramService) {
+                       @Qualifier("commandMap") Map<String, BotCommand> commandMap, TelegramService telegramService, ChatLogService chatLogService) {
         this.botToken = botToken;
         this.botUsername = botUsername;
         this.openAiApiKey = openAiApiKey;
         this.commandMap = commandMap;
         this.telegramService = telegramService;
+        this.chatLogService = chatLogService;
     }
 
     public void botConnect() throws TelegramApiException {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
             botsApi.registerBot(this);
-            log.info("Bot successfully started!");
         } catch (TelegramApiException e) {
             log.error("Error when starting gptBot. Details: {}", e.getMessage());
         }
@@ -54,22 +55,22 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println("Received update: " + update);
         if (update.hasMessage() && update.getMessage().hasText()) {
             String text = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
-            System.out.println("Received message from user " + chatId + ": " + text);
 
-//            String responseText = getResponseFromOpenAI(text);
+            chatLogService.saveChatLog(chatId.toString(), "User: " + text);
+
             BotCommand command = commandMap.get(text);
             if (command != null) {
                 log.info("Executing command: {}", text);
                 command.execute(chatId, null);
             } else {
-                log.warn("Unknown command received: {}", text);
-                telegramService.sendMessage(chatId, "Unknown command: " + text);
+                String responseText = getResponseFromOpenAI(text);
+                chatLogService.saveChatLog(chatId.toString(), "Bot: " + responseText);
+
+                telegramService.sendMessage(chatId, responseText);
             }
-//            telegramService.sendMessage(chatId, responseText);
         } else {
             System.out.println("Received unexpected update: " + update);
         }
@@ -82,26 +83,42 @@ public class TelegramBot extends TelegramLongPollingBot {
         headers.setAccept(Collections.singletonList(APPLICATION_JSON));
         headers.set("Authorization", "Bearer " + openAiApiKey);
 
-        String requestBody = "{\"prompt\": \"" + userInput + "\", \"max_tokens\": 150}";
+        String processedInput = userInput.replace("\"", "\\\"").trim();
+        if (processedInput.isEmpty()) {
+            return "Please provide a valid input.";
+        }
+
+        String requestBody = "{\"model\": \"davinci\", "
+                + "\"prompt\": \"" + processedInput + "\", "
+                + "\"max_tokens\": 50, "
+                + "\"temperature\": 0.3, "
+                + "\"top_p\": 1, "
+                + "\"frequency_penalty\": 0.0}";
+
         log.info("Sending request to OpenAI: {}", requestBody);
-        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://api.openai.com/v1/engines/davinci/completions", request, String.class);
+        try {
+            HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                    "https://api.openai.com/v1/completions", request, String.class);
 
-        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            try {
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 JSONObject jsonResponse = new JSONObject(response.getBody());
-                String textResponse = jsonResponse.getJSONArray("choices").getJSONObject(0).getString("text");
+                String textResponse = jsonResponse.getJSONArray("choices").getJSONObject(0).getString("text").trim();
+
+                if (textResponse.isEmpty() || textResponse.endsWith("...")) {
+                    return "I'm sorry, I couldn't generate a complete response. Could you please rephrase or clarify your query?";
+                }
+
                 log.info("OpenAI response: {}", textResponse);
                 return textResponse;
-            } catch (JSONException e) {
-                log.error("Error parsing JSON response from OpenAI: {}", e.getMessage());
-                return "Error processing your request.";
+            } else {
+                log.error("Error in OpenAI response: {} - {}", response.getStatusCode(), response.getBody());
+                return "Sorry, I couldn't process your request.";
             }
-        } else {
-            log.error("Error in OpenAI response: {} - {}", response.getStatusCode(), response.getBody());
-            return "Sorry, I couldn't process your request.";
+        } catch (Exception e) {
+            log.error("Error processing OpenAI request: {}", e.getMessage());
+            return "Error processing your request.";
         }
     }
 
