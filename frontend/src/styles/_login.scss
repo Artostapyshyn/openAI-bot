@@ -1,0 +1,124 @@
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20%;
+}
+
+body {
+  background: linear-gradient(to bottom, #76b852, #f1c40f);
+
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Jost', sans-serif;
+}
+
+form {
+  max-height: 500px;
+  max-width: 300px;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  label {
+    font-family: Calibri, serif;
+    margin-bottom: 8px;
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 16px;
+    margin-left: 20px;
+    border: 1px solid #ccc;
+    border-radius: 40px;
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: #888;
+    }
+  }
+
+  button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    width: 60%;
+    margin-left: 55px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+  }
+
+  p {
+    text-align: center;
+    font-size: 14px;
+
+    button {
+      background: none;
+      border: none;
+      color: #3498db;
+      font-size: 12px;
+      margin-right: 70px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #207bd9;
+      }
+    }
+  }
+
+  p > span {
+    margin-left: 5px;
+    margin-right: 50px;
+  }
+
+  p[style] {
+    margin-top: 8px;
+    color: red;
+  }
+}
+
+h1 {
+  margin-bottom: 16px;
+  font-family: Calibri, serif;
+  font-size: 24px;
+}
+
+p.account-check {
+  text-align: center;
+
+  button {
+    font-family: Calibri, serif;
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 5px;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #207bd9;
+    }
+  }
+}

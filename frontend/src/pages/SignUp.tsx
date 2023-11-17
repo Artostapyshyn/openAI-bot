@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ENDPOINTS } from "../services/ENDPOINTS";
 import {useNavigate} from "react-router-dom";
+import "../styles/_sign-up.scss";
 
 export const SignUp = () => {
     const [firstName, setFirstName] = useState('');
@@ -47,8 +48,8 @@ export const SignUp = () => {
     };
 
     return (
-        <div>
-            <h1>Sign Up Page</h1>
+        <div className="sign-up-container">
+            <h1>Sign Up</h1>
             <form>
                 <label>First Name:</label>
                 <input
@@ -89,9 +90,12 @@ export const SignUp = () => {
                     {loading ? 'Signing Up...' : 'Sign Up'}
                 </button>
 
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p className="error-message">{error}</p>}
 
-                <p>Already have an account? <button type="button" onClick={handleLoginRedirect}>Login</button></p>
+                <p className="account-existence-check">
+                    Already have an account?
+                    <button className="login-button" type="button" onClick={handleLoginRedirect}>Login</button>
+                </p>
             </form>
         </div>
     );

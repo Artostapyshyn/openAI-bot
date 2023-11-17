@@ -1,0 +1,62 @@
+.profile-page {
+  padding: 20px;
+  background-color: #eef2f7; /* Lighter background */
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif; /* Modern Font */
+  color: #333; /* Darker font color for better contrast */
+
+  h1 {
+    text-align: center;
+    color: #2c3e50; /* Dark blue color */
+    margin-bottom: 24px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px; /* Space between paragraphs */
+  }
+
+  button {
+    display: block;
+    width: 200px; /* Fixed width for the button */
+    margin: 20px auto; /* Center the button */
+    padding: 10px 15px;
+    background-color: #3498db; /* Blue background */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #2874a6;
+    }
+  }
+
+  .userbar__logout {
+    text-align: center;
+    margin-top: 20px;
+
+    p {
+      color: #e74c3c;
+      cursor: pointer;
+      display: inline-block;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #c0392b;
+      }
+    }
+  }
+}
+
+a {
+  color: #3498db;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

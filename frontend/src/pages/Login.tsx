@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import Cookies from "universal-cookie";
 import {ENDPOINTS} from "../services/ENDPOINTS";
 import {useNavigate} from "react-router-dom";
+import  "../styles/_login.scss";
 
 const cookies = new Cookies();
+
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -40,8 +42,8 @@ export const Login = () => {
     };
 
     return (
-        <div>
-            <h1>Login Page</h1>
+        <div className="log-in-container">
+            <h1>Login</h1>
             <form>
                 <label>Email:</label>
                 <input

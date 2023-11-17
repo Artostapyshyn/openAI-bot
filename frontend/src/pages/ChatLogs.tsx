@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {ENDPOINTS} from "../services/ENDPOINTS";
-import {Modal} from "../components/Modal";
 import Cookies from "universal-cookie";
 import {Link} from "react-router-dom";
+import "../styles/_chat-logs.scss";
 
 interface ChatLog {
     id: number;
@@ -77,30 +77,59 @@ export const ChatLogs: React.FC = () => {
         }
     };
 
+    function formatDateString(dateString: string): string {
+        const date = new Date(dateString);
+
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        return `${day}-${month} ${hours}:${minutes}`;
+    }
+
     return (
-        <div>
-            <h1>Chat Logs Page</h1>
-            <ul>
+        <div className="chat-logs-container">
+            <h1>Chat Logs</h1>
+            <table>
+                <thead>
+                <tr>
+                    <th>Chat ID</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
                 {chatLogs.map(chat => (
-                    <li key={chat.id}>
-                        <div>Chat ID: {chat.chatId}</div>
-                        <div>Message: {chat.message}</div>
-                        <div>Timestamp: {chat.timestamp}</div>
-                        <button onClick={() => handleOpenModal(chat.chatId)}>Send Message</button>
-                    </li>
+                    <tr key={chat.id}>
+                        <td>{chat.chatId}</td>
+                        <td>{chat.message}</td>
+                        <td>{formatDateString(chat.timestamp)}</td>
+                        <td>
+                            <button onClick={() => handleOpenModal(chat.chatId)}>Send Message</button>
+                        </td>
+                    </tr>
                 ))}
-            </ul>
-            <Link to="/profile">Go to Profile</Link>
+                </tbody>
+            </table>
+            <Link to="/profile" className="profile-link">Go to Profile</Link>
             {showModal && (
-                <Modal onClose={handleCloseModal}>
-                    <h2>Send Message</h2>
-                    <textarea
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type your message here..."
-                    />
-                    <button onClick={handleSendMessage}>Send</button>
-                </Modal>
+                <>
+                    <div className="modal-overlay" onClick={handleCloseModal}></div>
+                    <div className="modal">
+                        <h2>Send Message to chat ID {selectedChatId}</h2>
+                        <textarea
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            placeholder="Type your message here..."
+                        />
+                        <div className="modal-buttons">
+                            <button onClick={handleCloseModal}>Close</button>
+                            <button onClick={handleSendMessage}>Send</button>
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );

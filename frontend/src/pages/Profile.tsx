@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {ENDPOINTS} from '../services/ENDPOINTS';
 import {Link, useNavigate} from "react-router-dom";
 import Cookies from "universal-cookie";
-
+import "../styles/_profile.scss";
 interface UserData {
     firstName: string;
     lastName: string;
@@ -58,14 +58,13 @@ export const Profile: React.FC = () => {
     }
 
     return (
-        <div>
-            <h1>Profile Page</h1>
+        <div className="profile-page">
+            <h1>Profile</h1>
             <p>
                 Welcome, {userData.firstName} {userData.lastName}!
             </p>
             <p>Email: {userData.email}</p>
-            <p>Role: {userData.role}</p>
-            <button onClick={goToChatLogs}>Go to Chat Logs</button>
+            <button onClick={goToChatLogs}>Chat Logs</button>
 
             <Link to="/">
                 <div className="userbar__logout" onClick={() => {
