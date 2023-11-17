@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { ENDPOINTS } from '../services/ENDPOINTS';
-import {useNavigate} from "react-router-dom";
+import {useEffect, useState} from 'react';
+import {ENDPOINTS} from '../services/ENDPOINTS';
+import {Link, useNavigate} from "react-router-dom";
 import Cookies from "universal-cookie";
 
 interface UserData {
@@ -66,6 +66,14 @@ export const Profile: React.FC = () => {
             <p>Email: {userData.email}</p>
             <p>Role: {userData.role}</p>
             <button onClick={goToChatLogs}>Go to Chat Logs</button>
+
+            <Link to="/">
+                <div className="userbar__logout" onClick={() => {
+                    cookies.remove("token");
+                }}>
+                    <p>Logout</p>
+                </div>
+            </Link>
         </div>
     );
 };
