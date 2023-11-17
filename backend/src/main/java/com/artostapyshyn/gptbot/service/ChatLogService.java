@@ -1,7 +1,7 @@
 package com.artostapyshyn.gptbot.service;
 
-import com.artostapyshyn.gptbot.repository.ChatLogRepository;
 import com.artostapyshyn.gptbot.model.ChatLog;
+import com.artostapyshyn.gptbot.repository.ChatLogRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
