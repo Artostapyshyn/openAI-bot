@@ -13,7 +13,6 @@ export const Router: React.FC = () => {
             <Route path="/" element={<Login/>}/>
             <Route path="/sign-up" element={<SignUp/>}/>
             <Route path="/chat-logs" element={<ChatLogs/>}/>
-            {/*<Route path="/profile" element={<Profile/>}/>*/}
             <Route path="/profile" element={<ProtectedRouter children={<Profile/>} failed={<Navigate to={"/"}/>}/>}/>
         </Routes>
     </BrowserRouter>

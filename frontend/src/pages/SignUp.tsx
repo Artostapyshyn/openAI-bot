@@ -43,7 +43,7 @@ export const SignUp = () => {
     };
 
     const handleLoginRedirect = () => {
-        navigate("/login");
+        navigate("/");
     };
 
     return (

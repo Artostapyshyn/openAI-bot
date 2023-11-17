@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {ENDPOINTS} from "../services/ENDPOINTS";
 import {Modal} from "../components/Modal";
 import Cookies from "universal-cookie";
+import {Link} from "react-router-dom";
 
 interface ChatLog {
     id: number;
@@ -9,6 +10,7 @@ interface ChatLog {
     message: string;
     timestamp: string;
 }
+
 const cookies = new Cookies();
 export const ChatLogs: React.FC = () => {
     const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
@@ -26,10 +28,9 @@ export const ChatLogs: React.FC = () => {
             const resp = await fetch(ENDPOINTS.allMessages, {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`
                 },
-                method: 'GET',
-                ...ENDPOINTS.params
+                method: 'GET'
             });
             const data = await resp.json();
 
@@ -57,7 +58,10 @@ export const ChatLogs: React.FC = () => {
         try {
             const resp = await fetch(`${ENDPOINTS.sendMessage}?chatId=${selectedChatId}&message=${newMessage}`, {
                 method: 'POST',
-                ...ENDPOINTS.params
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
             const data = await resp.json();
@@ -86,7 +90,7 @@ export const ChatLogs: React.FC = () => {
                     </li>
                 ))}
             </ul>
-
+            <Link to="/profile">Go to Profile</Link>
             {showModal && (
                 <Modal onClose={handleCloseModal}>
                     <h2>Send Message</h2>
