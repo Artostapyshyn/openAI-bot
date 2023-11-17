@@ -35,6 +35,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final TelegramService telegramService;
     private final ChatLogService chatLogService;
 
+    private boolean registered = false;
+
     public TelegramBot(@Value("${telegram.bot.token}") String botToken,
                        @Value("${telegram.bot.username}") String botUsername,
                        @Value("${openai.api.key}") String openAiApiKey,
@@ -47,12 +49,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.chatLogService = chatLogService;
     }
 
+    public boolean isRegistered() {
+        return registered;
+    }
+
     public void botConnect() throws TelegramApiException {
-        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        try {
-            botsApi.registerBot(this);
-        } catch (TelegramApiException e) {
-            log.error("Error when starting telegramBot. Details: {}", e.getMessage());
+        if (!registered) {
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            try {
+                botsApi.registerBot(this);
+                registered = true;
+            } catch (TelegramApiException e) {
+                log.error("Error when starting telegramBot. Details: {}", e.getMessage());
+            }
         }
     }
 
