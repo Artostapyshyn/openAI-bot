@@ -5,6 +5,7 @@ import com.artostapyshyn.gptbot.service.TelegramService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +22,14 @@ public class ChatLogController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<List<ChatLog>> getAllChatLogs() {
+    public ResponseEntity<List<ChatLog>> getAllChatLogs(Authentication authentication) {
         List<ChatLog> chatLogs = chatLogService.findAll();
         return ResponseEntity.ok(chatLogs);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/send-message")
-    public void sendMessageToUser(@RequestParam Long chatId, @RequestParam String message) {
+    public void sendMessageToUser(@RequestParam Long chatId, @RequestParam String message, Authentication authentication) {
         telegramBotService.sendMessage(chatId, message);
     }
 }
