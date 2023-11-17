@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/chat-logs")
+@RequestMapping("/api/v1/user")
 @CrossOrigin(maxAge = 3600, origins = "*")
 @AllArgsConstructor
 public class UserController {
