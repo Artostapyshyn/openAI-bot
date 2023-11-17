@@ -3,6 +3,7 @@ package com.artostapyshyn.gptbot.bot;
 import com.artostapyshyn.gptbot.handler.BotCommand;
 import com.artostapyshyn.gptbot.service.ChatLogService;
 import com.artostapyshyn.gptbot.service.TelegramService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,6 +36,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final TelegramService telegramService;
     private final ChatLogService chatLogService;
 
+    @Getter
     private boolean registered = false;
 
     public TelegramBot(@Value("${telegram.bot.token}") String botToken,
@@ -47,10 +49,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.commandMap = commandMap;
         this.telegramService = telegramService;
         this.chatLogService = chatLogService;
-    }
-
-    public boolean isRegistered() {
-        return registered;
     }
 
     public void botConnect() throws TelegramApiException {
