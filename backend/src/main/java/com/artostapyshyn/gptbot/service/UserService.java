@@ -3,6 +3,7 @@ package com.artostapyshyn.gptbot.service;
 import com.artostapyshyn.gptbot.model.User;
 import com.artostapyshyn.gptbot.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,4 +22,10 @@ public class UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    public User getAuthUser(Authentication authentication) {
+        String studentEmail = authentication.getName();
+        return userRepository.findByEmail(studentEmail);
+    }
+
 }

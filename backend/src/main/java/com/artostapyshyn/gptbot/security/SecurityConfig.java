@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable).cors(withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("api/v1/auth/**").permitAll()
-                        .requestMatchers("api/v1/chat-logs/**").hasRole("ADMIN")
+                        .requestMatchers("api/v1/chat-logs/**", "api/v1/user/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 ).
                 sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
